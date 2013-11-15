@@ -38,6 +38,7 @@ public class MainWindow extends javax.swing.JFrame {
         jList1 = new javax.swing.JList();
         MenuBar = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
+        m_Connect = new javax.swing.JMenuItem();
         m_About = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         m_ExitButton = new javax.swing.JMenuItem();
@@ -60,12 +61,19 @@ public class MainWindow extends javax.swing.JFrame {
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setMinimumSize(new java.awt.Dimension(423, 600));
         setName("JFrame"); // NOI18N
-        setPreferredSize(new java.awt.Dimension(900, 600));
 
         MenuBar.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
 
         FileMenu.setText("File");
         FileMenu.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+
+        m_Connect.setText("Connect");
+        m_Connect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                m_ConnectActionPerformed(evt);
+            }
+        });
+        FileMenu.add(m_Connect);
 
         m_About.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
         m_About.setText("About");
@@ -181,6 +189,10 @@ public class MainWindow extends javax.swing.JFrame {
         LoadWindow.LoadWindow.Load(new About());
     }//GEN-LAST:event_m_AboutActionPerformed
 
+    private void m_ConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_ConnectActionPerformed
+        LoadWindow.LoadWindow.Load(new Connect());
+    }//GEN-LAST:event_m_ConnectActionPerformed
+
     @Override
     public void dispose() {
         LoadWindow.LoadWindow.Destroyed(this);
@@ -203,6 +215,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JMenuItem m_About;
+    private javax.swing.JMenuItem m_Connect;
     private javax.swing.JMenuItem m_ExitButton;
     // End of variables declaration//GEN-END:variables
 }
