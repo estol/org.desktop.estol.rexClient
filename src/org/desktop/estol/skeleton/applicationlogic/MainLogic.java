@@ -1,6 +1,7 @@
 package org.desktop.estol.skeleton.applicationlogic;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import org.desktop.estol.skeleton.debug.DebugUtilities;
 
 /**
@@ -11,9 +12,14 @@ public enum MainLogic
 {
     MainLogic;
     
+    private ThreadGroup setupThreads = new ThreadGroup("SetupThreads");
+    
+    private Thread scannerThread;
+    
+    
     public void initialize()
     {
-        autoMagicConnect();
+            autoMagicConnect();
     }
     
     private boolean autoMagicConnect()
@@ -21,9 +27,14 @@ public enum MainLogic
         try
         {
             BroadcastScanner scanner = new BroadcastScanner();
-            new Thread(scanner).start();
+            scannerThread = new Thread(setupThreads, scanner);
+            DebugUtilities.addDebugMessage(setupThreads.activeCount() + "");
+            if (setupThreads.activeCount() == 0)
+            {
+                scannerThread.start();
+            }
         }
-        catch (IOException ex)
+        catch (IOException | NoSuchAlgorithmException ex)
         {
             DebugUtilities.addDebugMessage(ex.getMessage());
         }

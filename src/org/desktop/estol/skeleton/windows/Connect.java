@@ -1,6 +1,7 @@
 package org.desktop.estol.skeleton.windows;
 
 import org.desktop.estol.skeleton.applicationlogic.MainLogic;
+import org.desktop.estol.skeleton.debug.DebugUtilities;
 import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
 
 /**
@@ -66,8 +67,8 @@ public class Connect extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bt_TriggerAutomagicSetupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_TriggerAutomagicSetupActionPerformed
-        pb_Searching.setIndeterminate(true);
-        MainLogic.MainLogic.initialize();
+            pb_Searching.setIndeterminate(true);
+            MainLogic.MainLogic.initialize();       
     }//GEN-LAST:event_bt_TriggerAutomagicSetupActionPerformed
 
     @Override
