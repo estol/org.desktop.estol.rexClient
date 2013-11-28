@@ -4,7 +4,8 @@ package org.desktop.estol.skeleton.windows;
 import org.desktop.estol.skeleton.commons.NotificationIcon;
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
-import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
+import javax.swing.JOptionPane;
+import org.desktop.estol.skeleton.applicationlogic.MainLogic;
 import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
 
 /**
@@ -34,14 +35,26 @@ public class MainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane2 = new javax.swing.JScrollPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jList2 = new javax.swing.JList();
         MenuBar = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         m_Connect = new javax.swing.JMenuItem();
+        m_Disconnect = new javax.swing.JMenuItem();
         m_About = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         m_ExitButton = new javax.swing.JMenuItem();
+        CommandMenu = new javax.swing.JMenu();
+        VideoCommandsMenu = new javax.swing.JMenu();
+        m_BlankVideoCommand = new javax.swing.JMenuItem();
+        AudioCommandsMenu = new javax.swing.JMenu();
+        m_BlankAudioCommand = new javax.swing.JMenuItem();
+        ArchiveCommandsMenu = new javax.swing.JMenu();
+        m_BlankArchiveCommand = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        m_CustomCommand = new javax.swing.JMenuItem();
         SettingsMenu = new javax.swing.JMenu();
         Preferences = new javax.swing.JMenuItem();
         DebugMenu = new javax.swing.JMenu();
@@ -49,18 +62,25 @@ public class MainWindow extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         DebugConsole = new javax.swing.JMenuItem();
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane2.setViewportView(jList1);
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Remote Executor Client");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setMinimumSize(new java.awt.Dimension(423, 600));
         setName("JFrame"); // NOI18N
+
+        jList1.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(jList1);
+
+        jList2.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(jList2);
 
         MenuBar.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
 
@@ -74,6 +94,14 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         FileMenu.add(m_Connect);
+
+        m_Disconnect.setText("Disconnect");
+        m_Disconnect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                m_DisconnectActionPerformed(evt);
+            }
+        });
+        FileMenu.add(m_Disconnect);
 
         m_About.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
         m_About.setText("About");
@@ -95,6 +123,43 @@ public class MainWindow extends javax.swing.JFrame {
         FileMenu.add(m_ExitButton);
 
         MenuBar.add(FileMenu);
+
+        CommandMenu.setText("Command");
+
+        VideoCommandsMenu.setText("Video Commands");
+
+        m_BlankVideoCommand.setText("Not yet implemented!");
+        m_BlankVideoCommand.setEnabled(false);
+        VideoCommandsMenu.add(m_BlankVideoCommand);
+
+        CommandMenu.add(VideoCommandsMenu);
+
+        AudioCommandsMenu.setText("Audio Commands");
+
+        m_BlankAudioCommand.setText("Not yet implemented!");
+        m_BlankAudioCommand.setEnabled(false);
+        AudioCommandsMenu.add(m_BlankAudioCommand);
+
+        CommandMenu.add(AudioCommandsMenu);
+
+        ArchiveCommandsMenu.setText("Archive Commands");
+
+        m_BlankArchiveCommand.setText("Not yet implemented!");
+        m_BlankArchiveCommand.setEnabled(false);
+        ArchiveCommandsMenu.add(m_BlankArchiveCommand);
+
+        CommandMenu.add(ArchiveCommandsMenu);
+        CommandMenu.add(jSeparator3);
+
+        m_CustomCommand.setText("Custom Command");
+        m_CustomCommand.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                m_CustomCommandActionPerformed(evt);
+            }
+        });
+        CommandMenu.add(m_CustomCommand);
+
+        MenuBar.add(CommandMenu);
 
         SettingsMenu.setText("Settings");
         SettingsMenu.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
@@ -141,11 +206,21 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 900, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 579, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
+                .addContainerGap())
         );
 
         pack();
@@ -153,27 +228,10 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void FireDebugMethodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FireDebugMethodActionPerformed
         //JOptionPane.showMessageDialog(null, "BANG!", "BANG BANG!", JOptionPane.INFORMATION_MESSAGE);
-        /*
-        StringBuilder sb = new StringBuilder();
-        for (String key : LoadWindowRevised.LoadWindow.getFrameKeys())
-        {
-            sb.append(key);
-            sb.append(", ");
-        }
-        DebugUtilities.addDebugMessage(sb.toString());*/
-        //DebugUtilities.addDebugMessage(Thread.currentThread().getName());
-        //DebugUtilities.addDebugMessage(LoadWindowRevised.LoadWindow.getFrame("Debug console").getTitle());
+        MainLogic.MainLogic.sendCommand("some string");
     }//GEN-LAST:event_FireDebugMethodActionPerformed
 
     private void DebugConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DebugConsoleActionPerformed
-        /*if (dw != null && dw.isVisible()) {
-            dw.setVisible(false);
-        } else {
-            if (dw == null) {
-                dw = new DebugWindow();
-            }
-            new LoadWindow(dw);
-        }*/
         LoadWindow.LoadWindow.Load(new DebugWindow());
     }//GEN-LAST:event_DebugConsoleActionPerformed
 
@@ -193,16 +251,30 @@ public class MainWindow extends javax.swing.JFrame {
         LoadWindow.LoadWindow.Load(new Connect());
     }//GEN-LAST:event_m_ConnectActionPerformed
 
+    private void m_DisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_DisconnectActionPerformed
+        MainLogic.MainLogic.disconnectTCPConnection();
+    }//GEN-LAST:event_m_DisconnectActionPerformed
+
+    private void m_CustomCommandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_CustomCommandActionPerformed
+        LoadWindow.LoadWindow.Load(new CustomCommand());
+    }//GEN-LAST:event_m_CustomCommandActionPerformed
+
     @Override
-    public void dispose() {
+    public void dispose()
+    {
         LoadWindow.LoadWindow.Destroyed(this);
         NotificationIcon.removeSystrayIcon();
+        MainLogic.MainLogic.sendCommand("socketExit");
+        MainLogic.MainLogic.disconnectTCPConnection();
         super.dispose();
     }
     
     protected DefaultListModel currentEventListModel = new DefaultListModel();
     protected DefaultListModel pastEventListModel = new DefaultListModel();
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu ArchiveCommandsMenu;
+    private javax.swing.JMenu AudioCommandsMenu;
+    private javax.swing.JMenu CommandMenu;
     private javax.swing.JMenuItem DebugConsole;
     private javax.swing.JMenu DebugMenu;
     private javax.swing.JMenu FileMenu;
@@ -210,12 +282,21 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuBar MenuBar;
     private javax.swing.JMenuItem Preferences;
     private javax.swing.JMenu SettingsMenu;
+    private javax.swing.JMenu VideoCommandsMenu;
     private javax.swing.JList jList1;
+    private javax.swing.JList jList2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JMenuItem m_About;
+    private javax.swing.JMenuItem m_BlankArchiveCommand;
+    private javax.swing.JMenuItem m_BlankAudioCommand;
+    private javax.swing.JMenuItem m_BlankVideoCommand;
     private javax.swing.JMenuItem m_Connect;
+    private javax.swing.JMenuItem m_CustomCommand;
+    private javax.swing.JMenuItem m_Disconnect;
     private javax.swing.JMenuItem m_ExitButton;
     // End of variables declaration//GEN-END:variables
 }

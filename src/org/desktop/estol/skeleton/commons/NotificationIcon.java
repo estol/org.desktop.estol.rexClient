@@ -34,12 +34,12 @@ public enum NotificationIcon
         {
             if (!SystemTray.isSupported())
             {
-                DebugUtilities.addDebugMessage
-                        ("Systray icon is not supported on this platform!");
+                DebugUtilities.addDebugMessage("Systray icon is not supported on this platform!");
             }
+            
             icon = new TrayIcon(CommonUtilities.createImage("TrayIcon.gif", "Tray icon", NotificationIcon.getClass()));
             icon.setImageAutoSize(true);
-            icon.setToolTip("org.desktop.estol.sekleton");
+            icon.setToolTip("org.desktop.estol.skeleton");
             
             MenuItem exitItem = new MenuItem();
             exitItem.setLabel("Exit");
@@ -51,8 +51,6 @@ public enum NotificationIcon
                     LoadWindow.LoadWindow.Terminate();
                 }
             });
-            
-            
             
             //systrayIconMenu.addSeparator();
             systrayIconMenu.add(exitItem);

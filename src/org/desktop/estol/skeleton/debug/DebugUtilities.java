@@ -1,6 +1,5 @@
 package org.desktop.estol.skeleton.debug;
 
-//import org.desktop.estol.skeleton.commons.NotificationIcon;
 import org.desktop.estol.skeleton.commons.NumericUtilities;
 import org.desktop.estol.skeleton.commons.ThreadedUtility;
 import java.awt.DisplayMode;
@@ -9,7 +8,6 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.MouseInfo;
 import java.awt.Point;
-//import java.awt.TrayIcon;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.text.DateFormat;
@@ -18,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
 import org.desktop.estol.skeleton.system.exceptions.InternalErrorException;
@@ -238,7 +237,7 @@ public class DebugUtilities
         static boolean Running = false;
         JTextPane pane = null;
         long interval = 125;
-        static volatile HashMap<String, String> messages = new HashMap();
+        static volatile TreeMap<String, String> messages = new TreeMap();
         static final DateFormat df = new SimpleDateFormat("MM/dd HH:mm:ss");
 
         DebugConsole() {
@@ -276,7 +275,6 @@ public class DebugUtilities
         @Override
         public final synchronized void display() {
             Iterator iterator = messages.entrySet().iterator();
-            boolean color = false;
             while (iterator.hasNext()) {
                 Map.Entry pairs = (Map.Entry)iterator.next();
                 StringBuilder sb = new StringBuilder();
@@ -289,7 +287,6 @@ public class DebugUtilities
                 sb.append("\n");
                 pane.setText(sb.toString());
                 iterator.remove();
-                color = !color;
             }
         }
 
@@ -469,7 +466,7 @@ public class DebugUtilities
         d.unSetPane();
     }
 
-    public static void addDebugMessage(String msg) {
+    public synchronized static void addDebugMessage(String msg) {
         if (d == null) {
             headlessDebugConsoleThread();
         }

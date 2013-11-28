@@ -13,13 +13,14 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Set;
 import org.desktop.estol.skeleton.commons.NotificationIcon;
 import org.desktop.estol.skeleton.debug.DebugUtilities;
+import org.desktop.estol.skeleton.system.exceptions.InternalErrorException;
+import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
+import org.desktop.estol.skeleton.windows.Connect;
 
 /**
  *
@@ -47,7 +48,32 @@ public class BroadcastScanner implements Runnable
         md = MessageDigest.getInstance("SHA-256");
     }
     
-    public String getServerInfo()
+    public ScannerStates getState()
+    {
+        return state;
+    }
+    
+    private void setState(ScannerStates state)
+    {
+        try {
+            this.state = state;
+            Connect connect = (Connect)LoadWindow.getFrame("Connect");
+            
+            if (state == ScannerStates.SCAN)
+            {
+                connect.getProgressBar().setIndeterminate(true);
+            }
+            
+            if (state == ScannerStates.VALID || state == ScannerStates.INVALID || state == ScannerStates.FAIL)
+            {
+                connect.getProgressBar().setIndeterminate(false);
+            }
+        } catch (InternalErrorException ex) {
+            DebugUtilities.addDebugMessage(ex.getMessage());
+        }
+    }
+    
+    private String getServerInfo()
     {
         Collection<String> values = packets.values();
         Iterator iterator = values.iterator();
@@ -73,12 +99,12 @@ public class BroadcastScanner implements Runnable
         }
         if (flag)
         {
-            state = ScannerStates.VALID;
-            return packets.keySet().iterator().next();
+            setState(ScannerStates.VALID);
+            return packets.keySet().iterator().next().substring(3);
         }
         else
         {
-            state = ScannerStates.INVALID;
+            setState(ScannerStates.INVALID);
             return null;
         }
     }
@@ -88,10 +114,11 @@ public class BroadcastScanner implements Runnable
     {
         try
         {
-            state = ScannerStates.SCAN;
+            setState(ScannerStates.SCAN);
             Thread.currentThread().setName("BroadcastScanner"); 
-            socket.setSoTimeout(40000);
-            while (packets.size() < 5)
+            socket.setSoTimeout(25000);
+            int recieved = 0;
+            while (packets.size() <= 2)
             {
                 socket.receive(broadcastMessage);
                 md.update(broadcastMessage.getData());
@@ -101,16 +128,20 @@ public class BroadcastScanner implements Runnable
                 {
                     sb.append(Integer.toString((hashByte & 0xff) + 0x100, 16).substring(1));
                 }
-                packets.put(new String(broadcastMessage.getData(), 0, broadcastMessage.getLength()), sb.toString());
+                packets.put(recieved + ". " + new String(broadcastMessage.getData(), 0, broadcastMessage.getLength()), sb.toString());
                 DebugUtilities.addDebugMessage(new String(broadcastMessage.getData(), 0, broadcastMessage.getLength()));
+                recieved++;
             }
+            DebugUtilities.addDebugMessage("loop ended in broadcastscanner");
+            //LoadWindow.disposeFrame("Connect");
             socket.leaveGroup(group);
             socket.close();
+            MainLogic.MainLogic.setupTCPConnection(getServerInfo());
             
         }
         catch (IOException ex)
         {
-            state = ScannerStates.FAIL;
+            setState(ScannerStates.FAIL);
             NotificationIcon.displayMessage("This is odd", "More than 40 seconds passed, and no server was detected so far.\n"
                     + "Are you sure the server is running?", TrayIcon.MessageType.INFO);
             DebugUtilities.addDebugMessage("Automagic setup experienced a problem: " + ex.getMessage());

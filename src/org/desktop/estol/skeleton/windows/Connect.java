@@ -1,7 +1,7 @@
 package org.desktop.estol.skeleton.windows;
 
+import javax.swing.JProgressBar;
 import org.desktop.estol.skeleton.applicationlogic.MainLogic;
-import org.desktop.estol.skeleton.debug.DebugUtilities;
 import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
 
 /**
@@ -67,8 +67,7 @@ public class Connect extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bt_TriggerAutomagicSetupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_TriggerAutomagicSetupActionPerformed
-            pb_Searching.setIndeterminate(true);
-            MainLogic.MainLogic.initialize();       
+                MainLogic.MainLogic.initialize();
     }//GEN-LAST:event_bt_TriggerAutomagicSetupActionPerformed
 
     @Override
@@ -77,44 +76,14 @@ public class Connect extends javax.swing.JFrame {
         super.dispose();
     }
     
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Connect.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Connect.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Connect.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Connect.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Connect().setVisible(true);
-            }
-        });
+    public JProgressBar getProgressBar()
+    {
+        return pb_Searching;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bt_TriggerAutomagicSetup;
     private javax.swing.JButton jButton1;
-    private javax.swing.JProgressBar pb_Searching;
+    private volatile javax.swing.JProgressBar pb_Searching;
     // End of variables declaration//GEN-END:variables
 }

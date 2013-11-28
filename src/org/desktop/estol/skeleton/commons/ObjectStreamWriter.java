@@ -75,8 +75,11 @@ public class ObjectStreamWriter implements ThreadedUtility, Runnable
         try {
             FileOutputStream fout = new FileOutputStream(path);
             ObjectOutputStream oos = new ObjectOutputStream(fout);
-            oos.writeObject(o);
-            oos.close();
+            synchronized (oos)
+            {
+                oos.writeObject(o);
+                oos.close();            
+            }
             DebugUtilities.addDebugMessage(path + " was written successfully!");
         }
         catch (IOException e)

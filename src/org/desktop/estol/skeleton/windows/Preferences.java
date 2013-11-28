@@ -5,7 +5,7 @@
 package org.desktop.estol.skeleton.windows;
 
 import java.io.File;
-import org.desktop.estol.skeleton.commons.WavePlayer;
+import org.desktop.estol.skeleton.commons.audio.WavePlayer;
 import org.desktop.estol.skeleton.debug.DebugUtilities;
 import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
 

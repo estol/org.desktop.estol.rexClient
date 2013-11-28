@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.desktop.estol.skeleton.debug.DebugUtilities;
+import org.desktop.estol.skeleton.system.exceptions.InternalErrorException;
 
 /**
  * A revised version of the LoadWindow class.
@@ -149,7 +152,7 @@ public enum LoadWindow
         else if (disposedWindows.containsKey(frame.getTitle()))
         {
             JFrame currentFrame = disposedWindows.get(frame.getTitle()).getFrame();
-            aliveWindows.put(currentFrame.getTitle(), disposedWindows.get(frame.getTitle()));
+            aliveWindows.put(currentFrame.getTitle(), disposedWindows.get(currentFrame.getTitle()));
             currentFrame.setVisible(true);
             currentFrame.toFront();
             currentFrame.repaint();
@@ -197,7 +200,8 @@ public enum LoadWindow
      */
     public synchronized void Destroyed(JFrame frame)
     {
-        if (!"Terminate".equals(new Throwable().getStackTrace()[2].getMethodName())) {
+        if (!"Terminate".equals(new Throwable().getStackTrace()[2].getMethodName()))
+        {
             disposedWindows.put(frame.getTitle(), aliveWindows.get(frame.getTitle()));
             aliveWindows.remove(frame.getTitle());
         }
@@ -208,7 +212,7 @@ public enum LoadWindow
      * revealing the frames to chose from.
      * 
      * @return
-     * @deprecated
+     * @deprecated was used only for debug purposes
      */
     @Deprecated
     public String[] getFrameKeys()
@@ -226,6 +230,42 @@ public enum LoadWindow
         return keys;
     }
     
+    /**
+     * Calls the dispose method of the JFrame defined in frame,
+     * or generates a debug message, if there is no such JFrame defined.
+     * @param name 
+     */
+    public static void disposeFrame(String name)
+    {
+        if (LoadWindow.aliveWindows.containsKey(name))
+        {
+            LoadWindow.aliveWindows.get(name).getFrame().dispose();
+        }
+        else
+        {
+            DebugUtilities.addDebugMessage("Can't dispose frame: " + name);
+        }
+    }
+    
+    public static JFrame getFrame(String name) throws InternalErrorException
+    {
+        if (LoadWindow.aliveWindows.containsKey(name))
+        {
+            return LoadWindow.aliveWindows.get(name).getFrame();
+        }
+        else
+        {
+            throw new InternalErrorException("No frame with the passed name (" + name + ") exists.");
+        }
+    }
+    
+    /**
+     * Terminates the application, by calling dispose on all currently alive
+     * frame. The dispose call is essential, so the individual frames may ask
+     * the user if the frame's state should be saved
+     * (in layman's term: save? yes - no and since the process is irreversible,
+     * there is no cancel.)
+     */
     public synchronized void Terminate()
     {
         
@@ -251,6 +291,14 @@ public enum LoadWindow
      */
     public static void initSystem()
     {
-        DebugUtilities.headlessDebugConsoleThread();
+        try
+        {
+            DebugUtilities.headlessDebugConsoleThread();
+            UIManager.setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");
+        }
+        catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException ex)
+        {
+            DebugUtilities.addDebugMessage("Exception occured while settings LAF: " + ex.getMessage());
+        }
     }
 }

@@ -1,4 +1,4 @@
-package org.desktop.estol.skeleton.commons;
+package org.desktop.estol.skeleton.commons.audio;
 
 import java.io.File;
 import java.io.IOException;
