@@ -42,6 +42,7 @@ public class BroadcastScanner implements Runnable
     public BroadcastScanner() throws IOException, NoSuchAlgorithmException
     {
         socket = new MulticastSocket(4041);
+        //NetworkInterface nif = NetworkInterface.getByInetAddress(InetAddress.);
         group = InetAddress.getByName("230.0.0.1");
         socket.joinGroup(group);
         broadcastMessage = new DatagramPacket(buffer, buffer.length);

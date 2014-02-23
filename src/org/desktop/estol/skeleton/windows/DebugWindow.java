@@ -7,7 +7,6 @@ package org.desktop.estol.skeleton.windows;
 import org.desktop.estol.skeleton.commons.SelectionListener;
 import org.desktop.estol.skeleton.debug.DebugUtilities;
 import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
-import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
 
 public class DebugWindow extends javax.swing.JFrame
 {

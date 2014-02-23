@@ -4,7 +4,6 @@ package org.desktop.estol.skeleton.windows;
 import org.desktop.estol.skeleton.commons.NotificationIcon;
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
-import javax.swing.JOptionPane;
 import org.desktop.estol.skeleton.applicationlogic.MainLogic;
 import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
 
@@ -60,7 +59,8 @@ public class MainWindow extends javax.swing.JFrame {
         DebugMenu = new javax.swing.JMenu();
         FireDebugMethod = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
-        DebugConsole = new javax.swing.JMenuItem();
+        LocalDebugConsole = new javax.swing.JMenuItem();
+        RemoteDebugConsole = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Remote Executor Client");
@@ -189,14 +189,22 @@ public class MainWindow extends javax.swing.JFrame {
         DebugMenu.add(FireDebugMethod);
         DebugMenu.add(jSeparator1);
 
-        DebugConsole.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
-        DebugConsole.setText("Debug Console");
-        DebugConsole.addActionListener(new java.awt.event.ActionListener() {
+        LocalDebugConsole.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        LocalDebugConsole.setText("Local Debug Console");
+        LocalDebugConsole.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DebugConsoleActionPerformed(evt);
+                LocalDebugConsoleActionPerformed(evt);
             }
         });
-        DebugMenu.add(DebugConsole);
+        DebugMenu.add(LocalDebugConsole);
+
+        RemoteDebugConsole.setText("Remote Debug Console");
+        RemoteDebugConsole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RemoteDebugConsoleActionPerformed(evt);
+            }
+        });
+        DebugMenu.add(RemoteDebugConsole);
 
         MenuBar.add(DebugMenu);
 
@@ -231,9 +239,9 @@ public class MainWindow extends javax.swing.JFrame {
         MainLogic.MainLogic.sendCommand("some string");
     }//GEN-LAST:event_FireDebugMethodActionPerformed
 
-    private void DebugConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DebugConsoleActionPerformed
+    private void LocalDebugConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LocalDebugConsoleActionPerformed
         LoadWindow.LoadWindow.Load(new DebugWindow());
-    }//GEN-LAST:event_DebugConsoleActionPerformed
+    }//GEN-LAST:event_LocalDebugConsoleActionPerformed
 
     private void m_ExitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_ExitButtonActionPerformed
         LoadWindow.LoadWindow.Terminate();
@@ -247,10 +255,6 @@ public class MainWindow extends javax.swing.JFrame {
         LoadWindow.LoadWindow.Load(new About());
     }//GEN-LAST:event_m_AboutActionPerformed
 
-    private void m_ConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_ConnectActionPerformed
-        LoadWindow.LoadWindow.Load(new Connect());
-    }//GEN-LAST:event_m_ConnectActionPerformed
-
     private void m_DisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_DisconnectActionPerformed
         MainLogic.MainLogic.disconnectTCPConnection();
     }//GEN-LAST:event_m_DisconnectActionPerformed
@@ -258,6 +262,14 @@ public class MainWindow extends javax.swing.JFrame {
     private void m_CustomCommandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_CustomCommandActionPerformed
         LoadWindow.LoadWindow.Load(new CustomCommand());
     }//GEN-LAST:event_m_CustomCommandActionPerformed
+
+    private void RemoteDebugConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoteDebugConsoleActionPerformed
+        LoadWindow.LoadWindow.Load(new RemoteDebugWindow());
+    }//GEN-LAST:event_RemoteDebugConsoleActionPerformed
+
+    private void m_ConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_ConnectActionPerformed
+        LoadWindow.LoadWindow.Load(new Connect());
+    }//GEN-LAST:event_m_ConnectActionPerformed
 
     @Override
     public void dispose()
@@ -275,12 +287,13 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenu ArchiveCommandsMenu;
     private javax.swing.JMenu AudioCommandsMenu;
     private javax.swing.JMenu CommandMenu;
-    private javax.swing.JMenuItem DebugConsole;
     private javax.swing.JMenu DebugMenu;
     private javax.swing.JMenu FileMenu;
     private javax.swing.JMenuItem FireDebugMethod;
+    private javax.swing.JMenuItem LocalDebugConsole;
     private javax.swing.JMenuBar MenuBar;
     private javax.swing.JMenuItem Preferences;
+    private javax.swing.JMenuItem RemoteDebugConsole;
     private javax.swing.JMenu SettingsMenu;
     private javax.swing.JMenu VideoCommandsMenu;
     private javax.swing.JList jList1;

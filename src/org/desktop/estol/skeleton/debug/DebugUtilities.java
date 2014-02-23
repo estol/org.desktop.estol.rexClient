@@ -13,7 +13,6 @@ import java.lang.management.ThreadMXBean;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -452,6 +451,14 @@ public class DebugUtilities
         }
     }
     
+    public static void stopDebugThreads()
+    {
+        m.shutdown();
+        t.shutdown();
+        d.shutdown();
+        lw.shutdown();
+    }
+    
     public static void headlessDebugConsoleThread() {
         if (d == null) {
             d = new DebugConsole();
@@ -466,7 +473,7 @@ public class DebugUtilities
         d.unSetPane();
     }
 
-    public synchronized static void addDebugMessage(String msg) {
+    public static void addDebugMessage(String msg) {
         if (d == null) {
             headlessDebugConsoleThread();
         }
@@ -474,7 +481,10 @@ public class DebugUtilities
         {
             //NotificationIcon.displayMessage("Debug message added!", msg, TrayIcon.MessageType.INFO);
         }
-        d.addMessage(msg);
+        synchronized (d)
+        {
+            d.addMessage(msg);
+        }
     }
 
     public static void DebugConsoleshutdown() {

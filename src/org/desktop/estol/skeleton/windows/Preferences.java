@@ -18,10 +18,11 @@ public class Preferences extends javax.swing.JFrame {
     /**
      * Creates new form Preferences
      */
-    public Preferences() {
+    public Preferences()
+    {
         initComponents();
         detectSoundFiles();
-        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

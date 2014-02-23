@@ -51,6 +51,7 @@ public enum MainLogic
             if (setupThreads.activeCount() == 0)
             {
                 scannerThread.start();
+                DebugUtilities.addDebugMessage(setupThreads.activeCount() + "");
             }
         }
         catch (IOException | NoSuchAlgorithmException ex)
@@ -64,23 +65,17 @@ public enum MainLogic
     {
         try {
             String[] parsedServerInfo = serverInfo.split(":");
-            socket = new Socket(InetAddress.getByName(parsedServerInfo[0]),
-                    Integer.parseInt(parsedServerInfo[1]));
+            socket = new Socket(InetAddress.getByName(parsedServerInfo[0]), Integer.parseInt(parsedServerInfo[1]));
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
-            JOptionPane.showMessageDialog(null, "Successfully connected to "
-                    + parsedServerInfo[0] + " on port "
-                    + parsedServerInfo[1] + "!");
+            JOptionPane.showMessageDialog(null, "Successfully connected to " + parsedServerInfo[0] + " on port " + parsedServerInfo[1] + "!");
             try {
                 LoadWindow.getFrame("Connect").dispose();
             } catch (InternalErrorException ex) {
-                DebugUtilities.addDebugMessage(ex.getMessage());
+                DebugUtilities.addDebugMessage("Error disposing connect window" + ex.getMessage());
             }
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null,
-                    "Couldn't connect to server\n"
-                            + "The following error occured:\n"
-                            + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Couldn't connect to server\nThe following error occured:\n" + ex.getMessage());
             DebugUtilities.addDebugMessage(ex.getMessage());
         }
     }

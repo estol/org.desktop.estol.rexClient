@@ -1,6 +1,5 @@
 package org.desktop.estol.skeleton.core;
 
-//import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
 import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
 import org.desktop.estol.skeleton.windows.MainWindow;
 
@@ -15,9 +14,8 @@ public class Core
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        //Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler()); // see GlobalExceptionHandler.java
-        // not using this in my homework
+    public static void main(String[] args)
+    {
         LoadWindow.initSystem();
         LoadWindow.LoadWindow.Load(new MainWindow());
     }

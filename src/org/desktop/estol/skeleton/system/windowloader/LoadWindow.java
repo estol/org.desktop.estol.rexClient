@@ -93,6 +93,11 @@ public enum LoadWindow
      */
     private void setWindowPosition(String frame, int screen)
     {
+        setWindowPosition(frame, screen, 0, 0);
+    }
+    
+    private void setWindowPosition(String frame, int screen, int offsetX, int offsetY)
+    {
         JFrame window = aliveWindows.get(frame).getFrame();
         
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -109,7 +114,7 @@ public enum LoadWindow
         }
         else
         {
-            DebugUtilities.addDebugMessage("Screen probably doesn't exists, fallback to default main.");
+            DebugUtilities.addDebugMessage("Screen " + screen + " probably doesn't exists, fallback to default main.");
             topLeftX = allDevices[0].getDefaultConfiguration().getBounds().x;
             topLeftY = allDevices[0].getDefaultConfiguration().getBounds().y;
 
@@ -162,6 +167,7 @@ public enum LoadWindow
         else
         {
             final JFrame window = frame;
+            
             String frameName = window.getTitle();
             DebugUtilities.addDebugMessage(frameName);
             Thread frameThread = new Thread
@@ -204,6 +210,7 @@ public enum LoadWindow
         {
             disposedWindows.put(frame.getTitle(), aliveWindows.get(frame.getTitle()));
             aliveWindows.remove(frame.getTitle());
+            DebugUtilities.addDebugMessage(frame.getTitle() + " destroyed!");
         }
     }
     
@@ -275,19 +282,13 @@ public enum LoadWindow
             Map.Entry<String, dataWrapper> pairs = (Map.Entry) iterator.next();
             pairs.getValue().getFrame().dispose();
         }
-        /*
-        iterator = disposedWindows.entrySet().iterator();
-        while (iterator.hasNext())
-        {
-            iterator.remove();
-        }*/
         System.exit(0);
     }
     
     /**
      * Initializes the underlying debug system atm, but
      * in the future may take care of certain housekeeping required to set up the
-     * environment of the program.
+     * environment for the windows.
      */
     public static void initSystem()
     {
