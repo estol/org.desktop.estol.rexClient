@@ -90,13 +90,13 @@ public enum MainLogic
                         + "closed for some reason...");
             }
             CommunicationObject co = new CommunicationObject(cmd);
+            DebugUtilities.addDebugMessage("Command was sent: " + cmd);
             oos.writeObject(co);
         }
         catch (IOException ex)
         {
-            // TODO: notify the user that the sending failed.
-            DebugUtilities.addDebugMessage("sendCommand method failed: "
-                    + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "The following error occured while trying to send command \"" + cmd + "\"\n" + ex.getMessage(), "Error sending command!", JOptionPane.ERROR_MESSAGE);
+            DebugUtilities.addDebugMessage("sendCommand method failed: " + ex.getMessage());
         }
     }
     

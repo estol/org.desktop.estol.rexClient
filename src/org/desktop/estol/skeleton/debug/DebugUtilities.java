@@ -285,6 +285,7 @@ public class DebugUtilities
                 sb.append(pairs.getValue());
                 sb.append("\n");
                 pane.setText(sb.toString());
+                pane.setCaretPosition(pane.getText().length());
                 iterator.remove();
             }
         }

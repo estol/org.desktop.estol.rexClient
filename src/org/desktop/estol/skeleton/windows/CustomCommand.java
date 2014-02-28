@@ -21,7 +21,6 @@ package org.desktop.estol.skeleton.windows;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import org.desktop.estol.skeleton.applicationlogic.MainLogic;
 import org.desktop.estol.skeleton.debug.DebugUtilities;
 import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
@@ -39,6 +38,7 @@ public class CustomCommand extends javax.swing.JFrame
     public CustomCommand()
     {
         initComponents();
+        tf_CommandField.requestFocus();
     }
 
     /**
@@ -114,19 +114,7 @@ public class CustomCommand extends javax.swing.JFrame
         {
             sendMessage();
             commands.add(tf_CommandField.getText());
-        }
-        if (evt.getKeyCode() == KeyEvent.VK_UP)
-        {
-            current = tf_CommandField.getText();
-            Iterator<String> iterator = commands.iterator();
-            if (iterator.hasNext())
-            {
-                tf_CommandField.setText(iterator.next());
-            }
-            else
-            {
-                tf_CommandField.setText(current);
-            }    
+            tf_CommandField.requestFocus();
         }
     }//GEN-LAST:event_tf_CommandFieldKeyPressed
 
