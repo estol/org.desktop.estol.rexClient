@@ -1,10 +1,22 @@
 package org.desktop.estol.skeleton.windows;
 
 
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import org.desktop.estol.skeleton.commons.NotificationIcon;
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 import org.desktop.estol.skeleton.applicationlogic.MainLogic;
+import org.desktop.estol.skeleton.debug.DebugUtilities;
 import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
 
 /**
@@ -17,10 +29,91 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form MainWindow
      */
     public MainWindow()
-    { //throws Exception {
+    {
         initComponents();
-        //setLocation((Toolkit.getDefaultToolkit().getScreenSize().width  - getSize().width) / 2, (Toolkit.getDefaultToolkit().getScreenSize().height - getSize().height) /2);
         NotificationIcon.initSystrayIcon();
+        tree_FileSystem.addTreeExpansionListener(new TreeExpansionListener()
+        {
+            @Override
+            public void treeExpanded(TreeExpansionEvent event)
+            {
+                try
+                {
+                    /*
+                    DefaultTreeModel tree = (DefaultTreeModel) MainLogic.MainLogic.getTree(event.getPath());
+                    DefaultMutableTreeNode relativeRoot = (DefaultMutableTreeNode)event.getPath().getLastPathComponent();
+                    relativeRoot.removeAllChildren();
+                    DefaultTreeModel displayTree = (DefaultTreeModel) tree_FileSystem.getModel();
+                    
+                    Enumeration en = ((DefaultMutableTreeNode)tree.getRoot()).depthFirstEnumeration();
+                    while(en.hasMoreElements())
+                    {
+                        DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) en.nextElement();
+                        DebugUtilities.addDebugMessage("The current node("+ currentNode +") has " + currentNode.getChildCount() + " children.");
+                        displayTree.insertNodeInto((DefaultMutableTreeNode) en.nextElement(), relativeRoot, relativeRoot.getChildCount());
+                    }
+                    */
+                    DefaultTreeModel newTree = (DefaultTreeModel) MainLogic.MainLogic.getTree(event.getPath());
+                    DefaultMutableTreeNode root = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
+                    root.removeAllChildren();
+                    DefaultTreeModel oldTree = (DefaultTreeModel) tree_FileSystem.getModel();
+                    addChildNodes(oldTree, newTree, root);
+                }
+                catch (IOException | ClassNotFoundException ex)
+                {
+                    
+                }
+            }
+
+            void addChildNodes(DefaultTreeModel oldTree, DefaultTreeModel newTree, DefaultMutableTreeNode parent)
+            {
+                Enumeration<DefaultMutableTreeNode> en = ((DefaultMutableTreeNode)newTree.getRoot()).depthFirstEnumeration();
+                
+                HashMap<DefaultMutableTreeNode, Boolean> nodes = new HashMap<>();
+                
+                while (en.hasMoreElements())
+                {                    
+                    if (en.nextElement().getChildCount() == 0)
+                    {
+                        nodes.put(en.nextElement(), false);
+                    }
+                    else
+                    {
+                        nodes.put(en.nextElement(), false);
+                    }
+                    en.nextElement().removeAllChildren();
+                }
+                
+                Iterator iterator = nodes.entrySet().iterator();
+                while (iterator.hasNext())
+                {
+                    Map.Entry<DefaultMutableTreeNode, Boolean> pair = (Map.Entry)iterator.next();
+                    if (pair.getValue())
+                    {
+                        pair.getKey().add(new DefaultMutableTreeNode("Working... Please wait! (client)"));
+                    }
+                    oldTree.insertNodeInto(pair.getKey(), parent, parent.getChildCount());
+                }
+                
+                /*
+                while (en.hasMoreElements())
+                {
+                    if (en.nextElement().getChildCount() != 0)
+                    {
+                        en.nextElement().removeAllChildren();
+                        en.nextElement().add(new DefaultMutableTreeNode("Workng... Please wait! (client)"));
+                        oldTree.insertNodeInto(child, parent, parent.getChildCount());
+                    }
+                }*/
+            }
+
+            @Override
+            public void treeCollapsed(TreeExpansionEvent event)
+            {
+                //tree_FileSystem.getModel().
+            }
+        
+        });
         //throw new Exception();
         //hideTimePanel();
     }
@@ -34,10 +127,11 @@ public class MainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tree_FileSystem = new javax.swing.JTree();
+        jToolBar1 = new javax.swing.JToolBar();
+        jButton1 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
         MenuBar = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         m_Connect = new javax.swing.JMenuItem();
@@ -68,19 +162,28 @@ public class MainWindow extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(423, 600));
         setName("JFrame"); // NOI18N
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
+        tree_FileSystem.setModel(treeStructure());
+        jScrollPane3.setViewportView(tree_FileSystem);
 
-        jList2.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane2.setViewportView(jList2);
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/desktop/estol/skeleton/ImageAssets/Actions-network-disconnect-icon.png"))); // NOI18N
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton1);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 900, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 36, Short.MAX_VALUE)
+        );
 
         MenuBar.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
 
@@ -214,29 +317,35 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
-                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void FireDebugMethodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FireDebugMethodActionPerformed
-        //JOptionPane.showMessageDialog(null, "BANG!", "BANG BANG!", JOptionPane.INFORMATION_MESSAGE);
-        MainLogic.MainLogic.sendCommand("some string");
+        /*try
+        {
+            IniParser iniparser = new IniParser("testfile.ini");
+            System.out.printf("%b%n",
+                    iniparser.getBoolean("section1", "boolkey", false));
+        }
+        catch (IOException ex)
+        {
+            DebugUtilities.addDebugMessage("Ini parser error: " + ex.getMessage());
+        }*/
+        treeStructure();
     }//GEN-LAST:event_FireDebugMethodActionPerformed
 
     private void LocalDebugConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LocalDebugConsoleActionPerformed
@@ -281,6 +390,35 @@ public class MainWindow extends javax.swing.JFrame {
         super.dispose();
     }
     
+    private TreeModel treeStructure()
+    {
+        if (MainLogic.MainLogic.isConnected())
+        {
+            try
+            {
+                TreeModel tree = MainLogic.MainLogic.getTree();
+                tree_FileSystem.setModel(tree);
+                return tree;
+            }
+            catch (IOException | ClassNotFoundException ex)
+            {
+                JOptionPane.showMessageDialog(null, "Error occured while getting remote filesystem structure!", "Error!", JOptionPane.ERROR_MESSAGE);
+                DebugUtilities.addDebugMessage("Error occured while getting tree structure: " + ex.getMessage());
+                DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Error occured, please try reconnecting!");
+                TreeModel tree = new DefaultTreeModel(rootNode);
+                tree_FileSystem.setModel(tree);
+                return tree;
+            }
+        }
+        else
+        {
+                DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Client not connected, please connect first!");
+                TreeModel tree = new DefaultTreeModel(rootNode);
+                tree_FileSystem.setModel(tree);
+                return tree;
+        }
+    }
+    
     protected DefaultListModel currentEventListModel = new DefaultListModel();
     protected DefaultListModel pastEventListModel = new DefaultListModel();
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -296,13 +434,13 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem RemoteDebugConsole;
     private javax.swing.JMenu SettingsMenu;
     private javax.swing.JMenu VideoCommandsMenu;
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JMenuItem m_About;
     private javax.swing.JMenuItem m_BlankArchiveCommand;
     private javax.swing.JMenuItem m_BlankAudioCommand;
@@ -311,5 +449,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem m_CustomCommand;
     private javax.swing.JMenuItem m_Disconnect;
     private javax.swing.JMenuItem m_ExitButton;
+    private javax.swing.JTree tree_FileSystem;
     // End of variables declaration//GEN-END:variables
 }

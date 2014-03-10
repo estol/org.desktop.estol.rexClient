@@ -7,6 +7,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import javax.swing.JOptionPane;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 import org.clientserver.estol.commobject.CommunicationInterface;
 import org.clientserver.estol.commobject.CommunicationObject;
 import org.desktop.estol.skeleton.debug.DebugUtilities;
@@ -95,9 +97,47 @@ public enum MainLogic
         }
         catch (IOException ex)
         {
-            JOptionPane.showMessageDialog(null, "The following error occured while trying to send command \"" + cmd + "\"\n" + ex.getMessage(), "Error sending command!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    "The following error occured while trying to send command \"" + cmd + "\"\n" + ex.getMessage(),
+                    "Error sending command!", JOptionPane.ERROR_MESSAGE);
             DebugUtilities.addDebugMessage("sendCommand method failed: " + ex.getMessage());
         }
+    }
+    
+    public synchronized TreeModel getTree(Object path) throws IOException, ClassNotFoundException
+    {
+        if (path instanceof TreePath)
+        {
+            TreePath pth = (TreePath) path;
+            Object[] bits = pth.getPath();
+            StringBuilder sb = new StringBuilder();
+            for (Object o : bits)
+            {
+                sb.append("/");
+                sb.append(o);
+            }
+            //DebugUtilities.addDebugMessage(sb.toString());
+            sendCommand("ls:" + sb.toString());
+            CommunicationInterface response = getResponse();
+            return (TreeModel) response.getPayload();
+        }
+        else if (path instanceof String)
+        {
+            String pth = (String) path;
+            if ("ls:|root|".equals(pth))
+            {
+                sendCommand(pth);
+                CommunicationInterface response = getResponse();
+                return (TreeModel) response.getPayload();
+            }
+        }
+
+        throw new ClassNotFoundException("Unknown object passed");        
+    }
+    
+    public synchronized TreeModel getTree() throws IOException, ClassNotFoundException
+    {
+        return getTree("ls:|root|");
     }
     
     public synchronized CommunicationInterface getResponse()
@@ -133,5 +173,14 @@ public enum MainLogic
                         "Can't disconnect. Not even connected");
             }
         }
+    }
+    
+    public boolean isConnected()
+    {
+        if (socket != null)
+        {
+            return socket.isConnected();
+        }
+        return false;
     }
 }
