@@ -168,7 +168,7 @@ public enum LoadWindow
         {
             final JFrame window = frame;
             
-            String frameName = window.getTitle();
+            String frameName = frame.getTitle();
             DebugUtilities.addDebugMessage(frameName);
             Thread frameThread = new Thread
             (
@@ -177,12 +177,12 @@ public enum LoadWindow
                         @Override
                         public void run()
                         {
-                            window.setVisible(true);
-                        }
+                            window.setVisible(true); // TODO: variable frame is not visible in this scope
+                        }                            // find a way around this.
                     }
             );
             frameThread.setName("Window thread for " + frameName);
-            aliveWindows.put(frameName, new dataWrapper(window, frameThread));
+            aliveWindows.put(frameName, new dataWrapper(frame, frameThread));
             setWindowPosition(frameName, screen);
             frameThread.start();
         }

@@ -1,20 +1,26 @@
 package org.desktop.estol.skeleton.windows;
 
 
+import java.awt.Component;
+import java.awt.EventQueue;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 import org.desktop.estol.skeleton.commons.NotificationIcon;
 import javax.swing.Box;
-import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 import org.desktop.estol.skeleton.applicationlogic.MainLogic;
 import org.desktop.estol.skeleton.debug.DebugUtilities;
 import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
@@ -32,6 +38,33 @@ public class MainWindow extends javax.swing.JFrame {
     {
         initComponents();
         NotificationIcon.initSystrayIcon();
+        tree_FileSystem.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mousePressed(MouseEvent e)
+            {
+                int selectedRow = tree_FileSystem.getRowForLocation(e.getX(), e.getY());
+                TreePath selectionPath = tree_FileSystem.getPathForLocation(e.getX(), e.getY());
+                if (selectedRow != -1)
+                {
+                    if (e.getClickCount() == 2)
+                    {
+                        DebugUtilities.addDebugMessage("Double click on the tree: " + selectedRow + " " + selectionPath.getPath());
+                    }
+                    if (SwingUtilities.isRightMouseButton(e))
+                    {
+                        DebugUtilities.addDebugMessage("Alt click on the tree: " + selectedRow + " " + selectionPath.getPath());
+                        Component[] components = CommandMenu.getComponents();
+                        JPopupMenu popup = new JPopupMenu();
+                        for (Component component : components)
+                        {
+                            popup.add(component);
+                        }
+                        popup.show(tree_FileSystem, e.getX(), e.getY());
+                    }
+                }
+            }
+        });
         tree_FileSystem.addTreeExpansionListener(new TreeExpansionListener()
         {
             @Override
@@ -53,11 +86,32 @@ public class MainWindow extends javax.swing.JFrame {
                         displayTree.insertNodeInto((DefaultMutableTreeNode) en.nextElement(), relativeRoot, relativeRoot.getChildCount());
                     }
                     */
-                    DefaultTreeModel newTree = (DefaultTreeModel) MainLogic.MainLogic.getTree(event.getPath());
+                    /*
+                    DefaultTreeModel newTree = (DefaultTreeModel) MainLogic.MainLogic.getNodes(event.getPath());
                     DefaultMutableTreeNode root = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
                     root.removeAllChildren();
                     DefaultTreeModel oldTree = (DefaultTreeModel) tree_FileSystem.getModel();
                     addChildNodes(oldTree, newTree, root);
+                    tree_FileSystem.setModel(newTree);*/
+                    
+                    ArrayList<DefaultMutableTreeNode> nodes = MainLogic.MainLogic.getNodes(event.getPath());
+                    WeakReference<DefaultMutableTreeNode> sourceNode = new WeakReference(((DefaultMutableTreeNode)event.getPath().getLastPathComponent()));
+                    sourceNode.get().removeAllChildren();
+                    Iterator<DefaultMutableTreeNode> iterator = nodes.iterator();
+                    while(iterator.hasNext())
+                    {
+                        sourceNode.get().add(iterator.next());
+                    }
+                    EventQueue.invokeLater(new TreeUpdate(tree_FileSystem));
+                    /*
+                    DefaultMutableTreeNode root = (DefaultMutableTreeNode)event.getPath().getLastPathComponent();
+                    root.removeAllChildren();
+                    Iterator<DefaultMutableTreeNode> iterator = nodes.iterator();
+                    while(iterator.hasNext())
+                    {
+                        root.add(iterator.next());
+                    }
+                    ((DefaultMutableTreeNode)event.getPath().getLastPathComponent()).re*/
                 }
                 catch (IOException | ClassNotFoundException ex)
                 {
@@ -65,57 +119,32 @@ public class MainWindow extends javax.swing.JFrame {
                 }
             }
 
-            void addChildNodes(DefaultTreeModel oldTree, DefaultTreeModel newTree, DefaultMutableTreeNode parent)
-            {
-                Enumeration<DefaultMutableTreeNode> en = ((DefaultMutableTreeNode)newTree.getRoot()).depthFirstEnumeration();
-                
-                HashMap<DefaultMutableTreeNode, Boolean> nodes = new HashMap<>();
-                
-                while (en.hasMoreElements())
-                {                    
-                    if (en.nextElement().getChildCount() == 0)
-                    {
-                        nodes.put(en.nextElement(), false);
-                    }
-                    else
-                    {
-                        nodes.put(en.nextElement(), false);
-                    }
-                    en.nextElement().removeAllChildren();
-                }
-                
-                Iterator iterator = nodes.entrySet().iterator();
-                while (iterator.hasNext())
-                {
-                    Map.Entry<DefaultMutableTreeNode, Boolean> pair = (Map.Entry)iterator.next();
-                    if (pair.getValue())
-                    {
-                        pair.getKey().add(new DefaultMutableTreeNode("Working... Please wait! (client)"));
-                    }
-                    oldTree.insertNodeInto(pair.getKey(), parent, parent.getChildCount());
-                }
-                
-                /*
-                while (en.hasMoreElements())
-                {
-                    if (en.nextElement().getChildCount() != 0)
-                    {
-                        en.nextElement().removeAllChildren();
-                        en.nextElement().add(new DefaultMutableTreeNode("Workng... Please wait! (client)"));
-                        oldTree.insertNodeInto(child, parent, parent.getChildCount());
-                    }
-                }*/
-            }
-
             @Override
             public void treeCollapsed(TreeExpansionEvent event)
             {
-                //tree_FileSystem.getModel().
+                ((DefaultMutableTreeNode) event.getPath().getLastPathComponent()).removeAllChildren();
+                ((DefaultMutableTreeNode) event.getPath().getLastPathComponent()).add(new DefaultMutableTreeNode());
+                EventQueue.invokeLater(new TreeUpdate(tree_FileSystem));
             }
         
         });
-        //throw new Exception();
-        //hideTimePanel();
+    }
+    
+    private static class TreeUpdate implements Runnable
+    {
+        JTree tree;
+
+        TreeUpdate(JTree tree)
+        {
+            this.tree = tree;
+        }
+        
+        @Override
+        public void run()
+        {
+            tree.updateUI();
+        }
+        
     }
     
     /**
@@ -390,13 +419,22 @@ public class MainWindow extends javax.swing.JFrame {
         super.dispose();
     }
     
-    private TreeModel treeStructure()
+    public TreeModel treeStructure()
     {
         if (MainLogic.MainLogic.isConnected())
         {
             try
             {
-                TreeModel tree = MainLogic.MainLogic.getTree();
+                MainLogic.MainLogic.sendCommand("GetRoot");
+                DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode((String)MainLogic.MainLogic.getResponse().getPayload());
+                //TreeModel tree = MainLogic.MainLogic.getNodes();
+                ArrayList<DefaultMutableTreeNode> nodes = MainLogic.MainLogic.getNodes();
+                Iterator<DefaultMutableTreeNode> iterator = nodes.iterator();
+                while(iterator.hasNext())
+                {
+                    rootNode.add(iterator.next());
+                }
+                TreeModel tree = new DefaultTreeModel(rootNode);
                 tree_FileSystem.setModel(tree);
                 return tree;
             }
@@ -418,9 +456,7 @@ public class MainWindow extends javax.swing.JFrame {
                 return tree;
         }
     }
-    
-    protected DefaultListModel currentEventListModel = new DefaultListModel();
-    protected DefaultListModel pastEventListModel = new DefaultListModel();
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu ArchiveCommandsMenu;
     private javax.swing.JMenu AudioCommandsMenu;

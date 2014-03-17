@@ -5,9 +5,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.tree.TreeModel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import org.clientserver.estol.commobject.CommunicationInterface;
 import org.clientserver.estol.commobject.CommunicationObject;
@@ -65,18 +73,73 @@ public enum MainLogic
     
     public synchronized void setupTCPConnection(String serverInfo)
     {
-        try {
+        try
+        {
             String[] parsedServerInfo = serverInfo.split(":");
             socket = new Socket(InetAddress.getByName(parsedServerInfo[0]), Integer.parseInt(parsedServerInfo[1]));
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
-            JOptionPane.showMessageDialog(null, "Successfully connected to " + parsedServerInfo[0] + " on port " + parsedServerInfo[1] + "!");
-            try {
+            //JOptionPane.showMessageDialog(null, "Successfully connected to " + parsedServerInfo[0] + " on port " + parsedServerInfo[1] + "!");
+            sendCommand("auth");
+            String response = (String) getResponse().getPayload();
+            switch (response)
+            {
+                case "hash":
+                {
+                    JPanel loginDialog = new JPanel();
+                    loginDialog.setLayout(new BoxLayout(loginDialog, BoxLayout.PAGE_AXIS));
+                    JTextField username = new JTextField(32);
+                    JPasswordField password = new JPasswordField();
+                    loginDialog.add(new JLabel("Username: "));
+                    loginDialog.add(username);
+                    loginDialog.add(Box.createVerticalStrut(20));
+                    loginDialog.add(new JLabel("Password: "));
+                    loginDialog.add(password);
+                    
+                    int result = JOptionPane.showConfirmDialog(null, loginDialog, "Please enter your login credentials!", JOptionPane.OK_CANCEL_OPTION);
+                    if (result == JOptionPane.OK_OPTION)
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("authAs:");
+                        sb.append(username.getText());
+                        sb.append("-");
+                        sb.append(password.getPassword()); // TODO: encode password
+                        sendCommand(sb.toString());
+                        if ("ok".equals(((String)getResponse().getPayload())))
+                        {
+                            JOptionPane.showMessageDialog(null, "Successfully authenticated!", "Login successful!", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else
+                        {
+                            JOptionPane.showMessageDialog(null, "Error authenticating. Invalid username or password!", "Login failed!", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                    else
+                    {
+                        disconnectTCPConnection();
+                    }
+                    break;
+                }
+                /*
+                case "totp":
+                {
+                    JOptionPane.showMessageDialog(null, "Time-based One Time password authentication not implemented!", "Error!", JOptionPane.INFORMATION_MESSAGE);
+                }
+                */
+                default:
+                {
+                    JOptionPane.showMessageDialog(null, "Bad response.", "Error!", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+            try
+            {
                 LoadWindow.getFrame("Connect").dispose();
-            } catch (InternalErrorException ex) {
+            }
+            catch (InternalErrorException ex)
+            {
                 DebugUtilities.addDebugMessage("Error disposing connect window" + ex.getMessage());
             }
-        } catch (IOException ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null, "Couldn't connect to server\nThe following error occured:\n" + ex.getMessage());
             DebugUtilities.addDebugMessage(ex.getMessage());
         }
@@ -104,7 +167,7 @@ public enum MainLogic
         }
     }
     
-    public synchronized TreeModel getTree(Object path) throws IOException, ClassNotFoundException
+    public synchronized ArrayList<DefaultMutableTreeNode> getNodes(Object path) throws IOException, ClassNotFoundException
     {
         if (path instanceof TreePath)
         {
@@ -113,13 +176,16 @@ public enum MainLogic
             StringBuilder sb = new StringBuilder();
             for (Object o : bits)
             {
-                sb.append("/");
+                if (!((String)((DefaultMutableTreeNode) o).getUserObject()).startsWith("/"))
+                {
+                    sb.append("/");
+                }
                 sb.append(o);
             }
             //DebugUtilities.addDebugMessage(sb.toString());
             sendCommand("ls:" + sb.toString());
             CommunicationInterface response = getResponse();
-            return (TreeModel) response.getPayload();
+            return (ArrayList<DefaultMutableTreeNode>) response.getPayload();
         }
         else if (path instanceof String)
         {
@@ -128,16 +194,16 @@ public enum MainLogic
             {
                 sendCommand(pth);
                 CommunicationInterface response = getResponse();
-                return (TreeModel) response.getPayload();
+                return (ArrayList<DefaultMutableTreeNode>) response.getPayload();
             }
         }
 
         throw new ClassNotFoundException("Unknown object passed");        
     }
     
-    public synchronized TreeModel getTree() throws IOException, ClassNotFoundException
+    public synchronized ArrayList<DefaultMutableTreeNode> getNodes() throws IOException, ClassNotFoundException
     {
-        return getTree("ls:|root|");
+        return getNodes("ls:|root|");
     }
     
     public synchronized CommunicationInterface getResponse()

@@ -81,7 +81,7 @@ public class Connect extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bt_TriggerAutomagicSetupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_TriggerAutomagicSetupActionPerformed
-                MainLogic.MainLogic.initialize();
+        MainLogic.MainLogic.initialize();
     }//GEN-LAST:event_bt_TriggerAutomagicSetupActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

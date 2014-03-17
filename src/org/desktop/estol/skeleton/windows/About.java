@@ -87,7 +87,7 @@ public class About extends javax.swing.JFrame {
     }
     
     private static final String GPL2LICENSE = "Remote Executor Client " +
-                                              "Copyright (C) 2013  Péter Szabó, estol, pwyvern@gmail.com\n" +
+                                              "Copyright (C) 2014  Péter Szabó, estol, pwyvern@gmail.com\n" +
                                               "\n" +
                                               "This program is free software; you can redistribute it and/or\n" +
                                               "modify it under the terms of the GNU General Public License\n" +
