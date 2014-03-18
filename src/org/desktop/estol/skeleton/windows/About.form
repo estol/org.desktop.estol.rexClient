@@ -68,7 +68,7 @@
           <Font name="Ubuntu Mono" size="14" style="0"/>
         </Property>
         <Property name="horizontalAlignment" type="int" value="0"/>
-        <Property name="text" type="java.lang.String" value="Version 0.0.1 Proof of Concept"/>
+        <Property name="text" type="java.lang.String" value="Version 0.1.5 Proof of Concept"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">

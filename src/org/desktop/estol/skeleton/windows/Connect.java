@@ -29,7 +29,7 @@ public class Connect extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         pb_Searching = new javax.swing.JProgressBar();
         bt_TriggerAutomagicSetup = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        bt_dev_QuickConnect = new javax.swing.JButton();
 
         jButton1.setText("jButton1");
 
@@ -43,10 +43,10 @@ public class Connect extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("jButton2");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        bt_dev_QuickConnect.setText("Quick Connect");
+        bt_dev_QuickConnect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                bt_dev_QuickConnectActionPerformed(evt);
             }
         });
 
@@ -61,8 +61,8 @@ public class Connect extends javax.swing.JFrame {
                 .addComponent(bt_TriggerAutomagicSetup, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(76, 76, 76)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(81, 81, 81)
+                .addComponent(bt_dev_QuickConnect, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -72,9 +72,9 @@ public class Connect extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(bt_TriggerAutomagicSetup, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
                     .addComponent(pb_Searching, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(56, 56, 56)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                .addComponent(bt_dev_QuickConnect, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -84,10 +84,10 @@ public class Connect extends javax.swing.JFrame {
         MainLogic.MainLogic.initialize();
     }//GEN-LAST:event_bt_TriggerAutomagicSetupActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void bt_dev_QuickConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_dev_QuickConnectActionPerformed
         //192.168.1.50:5052
         MainLogic.MainLogic.setupTCPConnection("192.168.1.50:5052");
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_bt_dev_QuickConnectActionPerformed
 
     @Override
     public void dispose() {
@@ -102,8 +102,8 @@ public class Connect extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bt_TriggerAutomagicSetup;
+    private javax.swing.JButton bt_dev_QuickConnect;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private volatile javax.swing.JProgressBar pb_Searching;
     // End of variables declaration//GEN-END:variables
 }

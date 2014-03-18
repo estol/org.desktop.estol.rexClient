@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Tim
+ * Copyright (C) 2014 Péter Szabó
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,7 +43,7 @@ import org.headless.estol.debugobject.ThreadInformationObject;
 
 /**
  *
- * @author Tim
+ * @author Péter Szabó
  */
 public class RemoteDebugWindow extends javax.swing.JFrame
 {

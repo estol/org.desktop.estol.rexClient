@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 estol
+ * Copyright (C) 2014 Péter Szabó
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@ import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
 
 /**
  *
- * @author estol
+ * @author Péter Szabó
  */
 public class CustomCommand extends javax.swing.JFrame
 {

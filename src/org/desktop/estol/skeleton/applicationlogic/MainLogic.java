@@ -1,16 +1,38 @@
+/*
+ * Copyright (C) 2014 Péter Szabó
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+
 package org.desktop.estol.skeleton.applicationlogic;
 
+import java.awt.EventQueue;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -22,10 +44,11 @@ import org.clientserver.estol.commobject.CommunicationObject;
 import org.desktop.estol.skeleton.debug.DebugUtilities;
 import org.desktop.estol.skeleton.system.exceptions.InternalErrorException;
 import org.desktop.estol.skeleton.system.windowloader.LoadWindow;
+import org.desktop.estol.skeleton.windows.MainWindow;
 
 /**
  *
- * @author estol
+ * @author Péter Szabó
  */
 public enum MainLogic
 {
@@ -38,6 +61,7 @@ public enum MainLogic
     private Socket socket = null;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
+    private String user;
     
     public void initialize()
     {
@@ -102,12 +126,56 @@ public enum MainLogic
                         StringBuilder sb = new StringBuilder();
                         sb.append("authAs:");
                         sb.append(username.getText());
+                        user = username.getText();
                         sb.append("-");
                         sb.append(password.getPassword()); // TODO: encode password
                         sendCommand(sb.toString());
-                        if ("ok".equals(((String)getResponse().getPayload())))
+                        response = (String) getResponse().getPayload();
+                        if ("ok".equals(response))
                         {
-                            JOptionPane.showMessageDialog(null, "Successfully authenticated!", "Login successful!", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "Successfully authenticated!", "Login successful!", JOptionPane.INFORMATION_MESSAGE);
+                            try
+                            {
+                                ((MainWindow)LoadWindow.getFrame("Remote Executor Client")).treeStructure();
+                            }
+                            catch (InternalErrorException ex)
+                            {
+                                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                        else if("admin".equals(response))
+                        {
+                            JOptionPane.showMessageDialog(null, "Successfully authenticated as an administrator!", "Login successful!", JOptionPane.INFORMATION_MESSAGE);
+                            try
+                            {
+                                MainWindow mw = (MainWindow) LoadWindow.getFrame("Remote Executor Client");
+                                mw.treeStructure();
+                                final JMenuBar menu = mw.getJMenuBar();
+                                JMenu adminMenu = new JMenu("Administration");
+                                JMenuItem addUser = new JMenuItem("Add user");
+                                JMenuItem removeUser = new JMenuItem("Remove user");
+                                JMenuItem check = new JMenuItem("Check user");
+                                JMenuItem changePass = new JMenuItem("Change password");
+                                JMenuItem grantAdmin = new JMenuItem("Grant administrator rights");
+                                adminMenu.add(addUser);
+                                adminMenu.add(removeUser);
+                                adminMenu.add(check);
+                                adminMenu.add(changePass);
+                                adminMenu.add(grantAdmin);
+                                menu.add(adminMenu, 4);
+                                EventQueue.invokeLater(new Runnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        menu.updateUI();
+                                    }
+                                });
+                            }
+                            catch (InternalErrorException ex)
+                            {
+                                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
+                            }
                         }
                         else
                         {
@@ -143,6 +211,11 @@ public enum MainLogic
             JOptionPane.showMessageDialog(null, "Couldn't connect to server\nThe following error occured:\n" + ex.getMessage());
             DebugUtilities.addDebugMessage(ex.getMessage());
         }
+    }
+    
+    private void createJobControlView(MainWindow mw)
+    {
+        JMenuBar menuBar = mw.getJMenuBar();
     }
     
     public synchronized void sendCommand(String cmd)
@@ -225,6 +298,7 @@ public enum MainLogic
     {
         try
         {
+            sendCommand("logout:" + user);
             oos.close();
             ois.close();
             socket.close();
