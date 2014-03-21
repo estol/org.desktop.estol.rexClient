@@ -136,7 +136,24 @@ public enum MainLogic
                             JOptionPane.showMessageDialog(null, "Successfully authenticated!", "Login successful!", JOptionPane.INFORMATION_MESSAGE);
                             try
                             {
-                                ((MainWindow)LoadWindow.getFrame("Remote Executor Client")).treeStructure();
+                                MainWindow mw = (MainWindow) LoadWindow.getFrame("Remote Executor Client");
+                                mw.treeStructure();
+                                final JMenuBar menu = mw.getJMenuBar();
+                                if (menu.getComponentCount() == 5)
+                                {
+                                    JMenu adminMenu = new JMenu("Administration");
+                                    JMenuItem changePass = new JMenuItem("Change password");
+                                    adminMenu.add(changePass);
+                                    menu.add(adminMenu, 4);
+                                    EventQueue.invokeLater(new Runnable()
+                                    {
+                                        @Override
+                                        public void run()
+                                        {
+                                            menu.updateUI();
+                                        }
+                                    });
+                                }
                             }
                             catch (InternalErrorException ex)
                             {
@@ -151,26 +168,32 @@ public enum MainLogic
                                 MainWindow mw = (MainWindow) LoadWindow.getFrame("Remote Executor Client");
                                 mw.treeStructure();
                                 final JMenuBar menu = mw.getJMenuBar();
-                                JMenu adminMenu = new JMenu("Administration");
-                                JMenuItem addUser = new JMenuItem("Add user");
-                                JMenuItem removeUser = new JMenuItem("Remove user");
-                                JMenuItem check = new JMenuItem("Check user");
-                                JMenuItem changePass = new JMenuItem("Change password");
-                                JMenuItem grantAdmin = new JMenuItem("Grant administrator rights");
-                                adminMenu.add(addUser);
-                                adminMenu.add(removeUser);
-                                adminMenu.add(check);
-                                adminMenu.add(changePass);
-                                adminMenu.add(grantAdmin);
-                                menu.add(adminMenu, 4);
-                                EventQueue.invokeLater(new Runnable()
+                                DebugUtilities.addDebugMessage(menu.getComponentCount() + "");
+                                if (menu.getComponentCount() == 5)
                                 {
-                                    @Override
-                                    public void run()
+                                    JMenu adminMenu = new JMenu("Administration");
+                                    JMenuItem addUser = new JMenuItem("Add user"); // addUser
+                                    JMenuItem removeUser = new JMenuItem("Remove user"); // removeUser
+                                    JMenuItem check = new JMenuItem("Check user"); // check
+                                    JMenuItem changePass = new JMenuItem("Change password"); // changePass
+                                    JMenuItem grantAdmin = new JMenuItem("Grant administrator rights"); // grantAdmin
+                                    JMenuItem revokeAdmin = new JMenuItem("Revoke administrator rights"); // revokeAdmin
+                                    adminMenu.add(addUser);
+                                    adminMenu.add(removeUser);
+                                    adminMenu.add(check);
+                                    adminMenu.add(changePass);
+                                    adminMenu.add(grantAdmin);
+                                    adminMenu.add(revokeAdmin);
+                                    menu.add(adminMenu, 4);
+                                    EventQueue.invokeLater(new Runnable()
                                     {
-                                        menu.updateUI();
-                                    }
-                                });
+                                        @Override
+                                        public void run()
+                                        {
+                                            menu.updateUI();
+                                        }
+                                    });
+                                }
                             }
                             catch (InternalErrorException ex)
                             {

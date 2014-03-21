@@ -414,6 +414,13 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void m_DisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_DisconnectActionPerformed
         MainLogic.MainLogic.disconnectTCPConnection();
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Client not connected, please connect first!");
+        TreeModel tree = new DefaultTreeModel(rootNode);
+        tree_FileSystem.setModel(tree);
+        if (getJMenuBar().getComponentCount() == 6)
+        {
+            getJMenuBar().remove(4);
+        }
     }//GEN-LAST:event_m_DisconnectActionPerformed
 
     private void m_CustomCommandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_CustomCommandActionPerformed
